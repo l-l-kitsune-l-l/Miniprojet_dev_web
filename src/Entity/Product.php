@@ -24,10 +24,10 @@ class Product
     private ?string $price = null;
 
     #[ORM\Column]
-    private ?int $stock = null;
+    private ?int $stock = 0;
 
     #[ORM\Column]
-    private ?int $stock_treshold = null;
+    private ?int $stock_treshold = 5;
 
     #[ORM\Column(length: 255)]
     private ?string $country = null;
@@ -46,6 +46,9 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Category $category = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?User $seller = null;
 
  
  
@@ -183,6 +186,18 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getSeller(): ?User
+    {
+        return $this->seller;
+    }
+
+    public function setSeller(?User $seller): static
+    {
+        $this->seller = $seller;
 
         return $this;
     }
