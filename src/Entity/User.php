@@ -66,10 +66,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'buyer')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'author')]
+    private Collection $writtenReviews;
+
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'seller')]
+    private Collection $receivedReviews;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->writtenReviews = new ArrayCollection();
+        $this->receivedReviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -280,6 +294,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($order->getBuyer() === $this) {
                 $order->setBuyer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getWrittenReviews(): Collection
+    {
+        return $this->writtenReviews;
+    }
+
+    public function addWrittenReview(Review $writtenReview): static
+    {
+        if (!$this->writtenReviews->contains($writtenReview)) {
+            $this->writtenReviews->add($writtenReview);
+            $writtenReview->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWrittenReview(Review $writtenReview): static
+    {
+        if ($this->writtenReviews->removeElement($writtenReview)) {
+            // set the owning side to null (unless already changed)
+            if ($writtenReview->getAuthor() === $this) {
+                $writtenReview->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReceivedReviews(): Collection
+    {
+        return $this->receivedReviews;
+    }
+
+    public function addReceivedReview(Review $receivedReview): static
+    {
+        if (!$this->receivedReviews->contains($receivedReview)) {
+            $this->receivedReviews->add($receivedReview);
+            $receivedReview->setSeller($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedReview(Review $receivedReview): static
+    {
+        if ($this->receivedReviews->removeElement($receivedReview)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedReview->getSeller() === $this) {
+                $receivedReview->setSeller(null);
             }
         }
 
