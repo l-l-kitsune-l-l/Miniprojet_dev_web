@@ -26,23 +26,11 @@ class Product
     #[ORM\Column]
     private ?int $stock = 0;
 
-    #[ORM\Column]
-    private ?int $stock_treshold = 5;
-
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $expiration_date = null;
-
     #[ORM\Column(length: 50)]
     private ?string $tag = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Category $category = null;
@@ -52,6 +40,18 @@ class Product
 
     #[ORM\Column]
     private ?bool $active = true;
+
+    #[ORM\Column]
+    private ?int $stockTreshold = 5;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $expirationDate = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $updatedAt = null;
 
  
  
@@ -109,17 +109,7 @@ class Product
         return $this;
     }
 
-    public function getStockTreshold(): ?int
-    {
-        return $this->stock_treshold;
-    }
-
-    public function setStockTreshold(int $stock_treshold): static
-    {
-        $this->stock_treshold = $stock_treshold;
-
-        return $this;
-    }
+   
 
     public function getCountry(): ?string
     {
@@ -133,17 +123,7 @@ class Product
         return $this;
     }
 
-    public function getExpirationDate(): ?\DateTime
-    {
-        return $this->expiration_date;
-    }
-
-    public function setExpirationDate(\DateTime $expiration_date): static
-    {
-        $this->expiration_date = $expiration_date;
-
-        return $this;
-    }
+ 
 
     public function getTag(): ?string
     {
@@ -157,29 +137,8 @@ class Product
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->created_at;
-    }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
-    {
-        $this->created_at = $created_at;
 
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
 
     public function getCategory(): ?Category
     {
@@ -213,6 +172,54 @@ class Product
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getStockTreshold(): ?int
+    {
+        return $this->stockTreshold;
+    }
+
+    public function setStockTreshold(int $stockTreshold): static
+    {
+        $this->stockTreshold = $stockTreshold;
+
+        return $this;
+    }
+
+    public function getExpirationDate(): ?\DateTime
+    {
+        return $this->expirationDate;
+    }
+
+    public function setExpirationDate(?\DateTime $expirationDate): static
+    {
+        $this->expirationDate = $expirationDate;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
