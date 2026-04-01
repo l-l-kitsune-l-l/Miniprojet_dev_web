@@ -50,6 +50,9 @@ class Product
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?User $seller = null;
 
+    #[ORM\Column]
+    private ?bool $active = true;
+
  
  
 
@@ -198,6 +201,18 @@ class Product
     public function setSeller(?User $seller): static
     {
         $this->seller = $seller;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
