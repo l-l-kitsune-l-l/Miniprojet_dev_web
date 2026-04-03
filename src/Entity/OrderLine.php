@@ -17,8 +17,6 @@ class OrderLine
     #[ORM\Column]
     private ?int $quantity = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $uniPrice = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderLines')]
     #[ORM\JoinColumn(nullable: false)]
@@ -27,6 +25,9 @@ class OrderLine
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $unitPrice = null;
 
     public function getId(): ?int
     {
@@ -41,18 +42,6 @@ class OrderLine
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    public function getUniPrice(): ?string
-    {
-        return $this->uniPrice;
-    }
-
-    public function setUniPrice(string $uniPrice): static
-    {
-        $this->uniPrice = $uniPrice;
 
         return $this;
     }
@@ -77,6 +66,19 @@ class OrderLine
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getUnitPrice(): ?string
+    {
+        return $this->unitPrice;
+    }
+    
+
+    public function setUnitPrice(string $unitPrice): static
+    {
+        $this->unitPrice = $unitPrice;
 
         return $this;
     }
