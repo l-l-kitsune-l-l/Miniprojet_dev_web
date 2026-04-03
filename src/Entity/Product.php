@@ -44,8 +44,6 @@ class Product
     #[ORM\Column]
     private ?bool $active = true;
 
-    #[ORM\Column]
-    private ?int $stockTreshold = 5;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $expirationDate = null;
@@ -64,6 +62,9 @@ class Product
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[ORM\Column]
+    private ?int $stockThreshold = 5;
 
     public function __construct()
     {
@@ -204,18 +205,6 @@ class Product
         return $this;
     }
 
-    public function getStockTreshold(): ?int
-    {
-        return $this->stockTreshold;
-    }
-
-    public function setStockTreshold(int $stockTreshold): static
-    {
-        $this->stockTreshold = $stockTreshold;
-
-        return $this;
-    }
-
     public function getExpirationDate(): ?\DateTime
     {
         return $this->expirationDate;
@@ -287,6 +276,18 @@ class Product
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getStockThreshold(): ?int
+    {
+        return $this->stockThreshold;
+    }
+
+    public function setStockThreshold(int $stockThreshold): static
+    {
+        $this->stockThreshold = $stockThreshold;
 
         return $this;
     }
