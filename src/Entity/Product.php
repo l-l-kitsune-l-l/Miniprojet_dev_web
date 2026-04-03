@@ -32,8 +32,6 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $tag = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Category $category = null;
@@ -65,6 +63,9 @@ class Product
 
     #[ORM\Column]
     private ?int $stockThreshold = 5;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $tag = null;
 
     public function __construct()
     {
@@ -154,17 +155,7 @@ class Product
 
  
 
-    public function getTag(): ?string
-    {
-        return $this->tag;
-    }
 
-    public function setTag(?string $tag): static
-    {
-        $this->tag = $tag;
-
-        return $this;
-    }
 
 
 
@@ -288,6 +279,18 @@ class Product
     public function setStockThreshold(int $stockThreshold): static
     {
         $this->stockThreshold = $stockThreshold;
+
+        return $this;
+    }
+
+    public function getTag(): ?string
+    {
+        return $this->tag;
+    }
+
+    public function setTag(?string $tag): static
+    {
+        $this->tag = $tag;
 
         return $this;
     }
