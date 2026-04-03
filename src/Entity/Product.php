@@ -159,7 +159,7 @@ class Product
         return $this->tag;
     }
 
-    public function setTag(string $tag): static
+    public function setTag(?string $tag): static
     {
         $this->tag = $tag;
 
