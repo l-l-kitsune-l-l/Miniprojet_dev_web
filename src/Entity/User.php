@@ -38,8 +38,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $pseudo = null;
 
 
-    #[ORM\Column(length: 255)]
-    private ?string $avatar = null;
 
     #[ORM\Column(length: 20)]
     private ?string $theme = null;
@@ -87,6 +85,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'favoritedBy')]
     private Collection $favorites;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
     
     #[ORM\PrePersist]
     public function onPrePersist(): void
@@ -184,17 +185,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?string $avatar): static
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
 
     public function getTheme(): ?string
     {
@@ -396,6 +386,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeFavorite(Product $favorite): static
     {
         $this->favorites->removeElement($favorite);
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
