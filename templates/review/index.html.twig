@@ -1,39 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Review index{% endblock %}
+{% block title %}Avis — Otaku Shop{% endblock %}
 
 {% block body %}
-    <h1>Review index</h1>
+<h1 class="mb-4"><i class="bi bi-star"></i> Avis vendeurs</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Content</th>
-                <th>Rating</th>
-                <th>CreatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+{% if reviews is empty %}
+    <div class="alert alert-info">Aucun avis pour le moment.</div>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for review in reviews %}
-            <tr>
-                <td>{{ review.id }}</td>
-                <td>{{ review.content }}</td>
-                <td>{{ review.rating }}</td>
-                <td>{{ review.createdAt ? review.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_review_show', {'id': review.id}) }}">show</a>
-                    <a href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <h6 class="mb-0">
+                                <i class="bi bi-person"></i> {{ review.author.pseudo }}
+                                <i class="bi bi-arrow-right"></i>
+                                <strong>{{ review.seller.pseudo }}</strong>
+                            </h6>
+                            <span class="text-warning">
+                                {% for i in 1..5 %}
+                                    {% if i <= review.rating %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        <p class="card-text">{{ review.content }}</p>
+                        <small class="text-muted">{{ review.createdAt|date('d/m/Y') }}</small>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_review_new') }}">Create new</a>
+    </div>
+{% endif %}
 {% endblock %}
