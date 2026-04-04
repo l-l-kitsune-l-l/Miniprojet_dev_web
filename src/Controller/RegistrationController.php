@@ -10,28 +10,46 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $em,
+        Security $security
+    ): Response {
+        // Si déjà connecté, rediriger vers l'accueil
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_product_index');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
+            // Hasher le mot de passe
+            $user->setPassword(
+                $passwordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                )
+            );
 
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+            // Valeurs par défaut
+            $user->setTheme('light');
+            $user->setLocale('fr');
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $em->persist($user);
+            $em->flush();
 
-            // do anything else you need here, like send an email
+            // Connecter automatiquement l'utilisateur
+            $security->login($user, 'form_login', 'main');
+
+            $this->addFlash('success', 'Bienvenue ' . $user->getPseudo() . ' ! Votre compte a été créé.');
 
             return $this->redirectToRoute('app_product_index');
         }
