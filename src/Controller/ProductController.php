@@ -105,3 +105,4 @@ public function delete(Request $request, Product $product, EntityManagerInterfac
 
     return $this->redirectToRoute('app_product_index');
 }
+}
