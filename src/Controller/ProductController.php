@@ -27,7 +27,7 @@ class ProductController extends AbstractController
     }
 
     // ===== CRÉATION =====
-    #[IsGranted('ROLE_USER')]
+#[IsGranted('ROLE_USER')]
 #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $em): Response
 {
@@ -63,34 +63,45 @@ public function new(Request $request, EntityManagerInterface $em): Response
 
     // ===== ÉDITION =====
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $em): Response
-    {
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-
-            $this->addFlash('success', 'Produit mis à jour !');
-            return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
-        }
-
-        return $this->render('product/edit.html.twig', [
-            'product' => $product,
-            'form' => $form,
-        ]);
+public function edit(Request $request, Product $product, EntityManagerInterface $em): Response
+{
+    // Vérifier que c'est le vendeur OU un admin
+    if ($product->getSeller() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+        $this->addFlash('danger', 'Vous ne pouvez modifier que vos propres produits.');
+        return $this->redirectToRoute('app_product_index');
     }
+
+    $form = $this->createForm(ProductType::class, $product);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em->flush();
+
+        $this->addFlash('success', 'Produit mis à jour !');
+        return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
+    }
+
+    return $this->render('product/edit.html.twig', [
+        'product' => $product,
+        'form' => $form,
+    ]);
+}
 
     // ===== SUPPRESSION =====
     #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $em): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
-            $em->remove($product);
-            $em->flush();
-            $this->addFlash('warning', 'Produit supprimé.');
-        }
-
+public function delete(Request $request, Product $product, EntityManagerInterface $em): Response
+{
+    // Seul le vendeur ou un admin peut supprimer
+    if ($product->getSeller() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+        $this->addFlash('danger', 'Vous ne pouvez supprimer que vos propres produits.');
         return $this->redirectToRoute('app_product_index');
     }
+
+    if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
+        $em->remove($product);
+        $em->flush();
+        $this->addFlash('warning', 'Produit supprimé.');
+    }
+
+    return $this->redirectToRoute('app_product_index');
 }
