@@ -1,75 +1,40 @@
-<?php
+{% extends 'base.html.twig' %}
 
-namespace App\Form;
+{% block title %}Avis — Otaku Shop{% endblock %}
 
-use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
+{% block body %}
+<h1 class="mb-4"><i class="bi bi-star"></i> Avis vendeurs</h1>
 
-class RegistrationFormType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('pseudo', TextType::class, [
-                'label' => 'Pseudo',
-                'attr' => ['placeholder' => 'Ex: otaku_fan']
-            ])
-            ->add('firstName', TextType::class, [
-                'label' => 'Prénom',
-                'attr' => ['placeholder' => 'Ex: Naruto']
-            ])
-            ->add('lastName', TextType::class, [
-                'label' => 'Nom',
-                'attr' => ['placeholder' => 'Ex: Uzumaki']
-            ])
-            ->add('email', EmailType::class, [
-                'label' => 'Adresse email',
-                'attr' => ['placeholder' => 'Ex: naruto@konoha.jp']
-            ])
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'mapped' => false,
-                'first_options' => [
-                    'label' => 'Mot de passe',
-                    'attr' => ['placeholder' => 'Minimum 6 caractères']
-                ],
-                'second_options' => [
-                    'label' => 'Confirmer le mot de passe',
-                    'attr' => ['placeholder' => 'Retapez le mot de passe']
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'Veuillez entrer un mot de passe']),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères',
-                        'max' => 4096,
-                    ]),
-                ],
-            ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'J\'accepte les conditions d\'utilisation',
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue(['message' => 'Vous devez accepter les conditions.']),
-                ],
-            ])
-        ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => User::class,
-        ]);
-    }
-}
+{% if reviews is empty %}
+    <div class="alert alert-info">Aucun avis pour le moment.</div>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for review in reviews %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <h6 class="mb-0">
+                                <i class="bi bi-person"></i> {{ review.author.pseudo }}
+                                <i class="bi bi-arrow-right"></i>
+                                <strong>{{ review.seller.pseudo }}</strong>
+                            </h6>
+                            <span class="text-warning">
+                                {% for i in 1..5 %}
+                                    {% if i <= review.rating %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        <p class="card-text">{{ review.content }}</p>
+                        <small class="text-muted">{{ review.createdAt|date('d/m/Y') }}</small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}
