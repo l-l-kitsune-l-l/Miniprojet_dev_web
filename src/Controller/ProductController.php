@@ -27,29 +27,30 @@ class ProductController extends AbstractController
     }
 
     // ===== CRÉATION =====
-    #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
+    #[IsGranted('ROLE_USER')]
+#[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $em): Response
+{
+    $product = new Product();
+    $form = $this->createForm(ProductType::class, $product);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Associer le vendeur connecté (activer quand l'auth sera en place)
-            // $product->setSeller($this->getUser());
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Associer le vendeur connecté
+        $product->setSeller($this->getUser());
 
-            $em->persist($product);
-            $em->flush();
+        $em->persist($product);
+        $em->flush();
 
-            $this->addFlash('success', 'Produit créé avec succès !');
-            return $this->redirectToRoute('app_product_index');
-        }
-
-        return $this->render('product/new.html.twig', [
-            'product' => $product,
-            'form' => $form,
-        ]);
+        $this->addFlash('success', 'Produit créé avec succès !');
+        return $this->redirectToRoute('app_product_index');
     }
+
+    return $this->render('product/new.html.twig', [
+        'product' => $product,
+        'form' => $form,
+    ]);
+}
 
     // ===== DÉTAIL =====
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
