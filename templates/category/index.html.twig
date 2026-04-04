@@ -1,40 +1,38 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Catégories — Otaku Shop{% endblock %}
+{% block title %}{{ 'categories_title'|trans }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="bi bi-tags"></i> Catégories</h1>
-    <a href="{{ path('app_category_new') }}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Nouvelle catégorie
-    </a>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-tags"></i> {{ 'categories_title'|trans }}</h1>
+        <a href="{{ path('app_category_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> {{ 'new_category_button'|trans }}
+        </a>
+    </div>
 
-{% if categories is empty %}
-    <div class="alert alert-info">Aucune catégorie.</div>
-{% else %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for category in categories %}
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ category.name }}</h5>
-                        <p class="card-text text-muted">{{ category.description ?? 'Aucune description' }}</p>
-                        <span class="badge bg-secondary">
-                            {{ category.products|length }} produit{{ category.products|length > 1 ? 's' : '' }}
+    {% if categories is empty %}
+        <div class="alert alert-info">{{ 'no_categories'|trans }}</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for category in categories %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ category.name }}</h5>
+                            <p class="card-text text-muted">{{ category.description ?? 'no_description'|trans }}</p>
+                            <span class="badge bg-secondary">
+                            {{ '{count, plural, =0 {No products} one {# product} other {# products}}'|trans({'count': category.products|length}) }}
                         </span>
-                    </div>
-                    <div class="card-footer bg-white d-flex justify-content-between">
-                        <a href="{{ path('app_category_show', {id: category.id}) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-eye"></i> Voir
-                        </a>
-                        <a href="{{ path('app_category_edit', {id: category.id}) }}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </a>
+                        </div>
+                        <div class="card-footer bg-white d-flex justify-content-between">
+                            <a href="{{ path('app_category_show', {id: category.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> {{ 'view_button'|trans }}
+                            </a>
+                            <a href="{{ path('app_category_edit', {id: category.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> {{ 'edit_button'|trans }}
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}

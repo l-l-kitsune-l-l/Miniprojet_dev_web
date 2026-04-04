@@ -1,0 +1,31 @@
+# Buttons and actions
+delete_confirm: "Are you sure you want to delete this item?"
+delete_button: "Delete"
+save_button: "Save"
+update_button: "Update"
+back_to_list: "Back to list"
+new_category_button: "New Category"
+view_button: "View"
+edit_button: "Edit"
+return_button: "Return"
+
+# Titles and sections
+edit_category_title: "Edit Category"
+create_category_title: "Create new Category"
+categories_title: "Categories"
+category_name_title: "{category_name} — Otaku Shop"
+products_of_category: "Products of this category"
+
+# Dynamic messages
+no_categories: "No categories."
+no_products_in_category: "No products in this category."
+no_description: "No description"
+low_stock: "Low"
+products_count: "{count, plural, =0 {No products} one {# product} other {# products}}"
+
+# Table headers
+table_header_name: "Name"
+table_header_price: "Price"
+table_header_stock: "Stock"
+table_header_tag: "Tag"
+table_header_actions: "Actions"

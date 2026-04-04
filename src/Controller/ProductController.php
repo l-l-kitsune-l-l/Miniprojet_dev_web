@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/product')]
+#[Route('/{_locale}/product')]
 class ProductController extends AbstractController
 {
     // ===== LISTE =====

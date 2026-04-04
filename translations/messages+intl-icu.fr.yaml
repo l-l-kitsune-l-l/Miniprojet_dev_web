@@ -1,0 +1,31 @@
+# Boutons et actions
+delete_confirm: "Êtes-vous sûr de vouloir supprimer cet élément ?"
+delete_button: "Supprimer"
+save_button: "Enregistrer"
+update_button: "Mettre à jour"
+back_to_list: "Retour à la liste"
+new_category_button: "Nouvelle catégorie"
+view_button: "Voir"
+edit_button: "Modifier"
+return_button: "Retour"
+
+# Titres et sections
+edit_category_title: "Modifier la catégorie"
+create_category_title: "Créer une nouvelle catégorie"
+categories_title: "Catégories"
+category_name_title: "{category_name} — Otaku Shop"
+products_of_category: "Produits de cette catégorie"
+
+# Messages dynamiques
+no_categories: "Aucune catégorie."
+no_products_in_category: "Aucun produit dans cette catégorie."
+no_description: "Aucune description"
+low_stock: "Faible"
+products_count: "{count, plural, =0 {Aucun produit} one {# produit} other {# produits}}"
+
+# Table headers
+table_header_name: "Nom"
+table_header_price: "Prix"
+table_header_stock: "Stock"
+table_header_tag: "Tag"
+table_header_actions: "Actions"
