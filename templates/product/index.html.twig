@@ -1,57 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product index{% endblock %}
+{% block title %}Produits — Otaku Shop{% endblock %}
 
 {% block body %}
-    <h1>Product index</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-box-seam"></i> Produits</h1>
+    <a href="{{ path('app_product_new') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nouveau produit
+    </a>
+</div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Country</th>
-                <th>Active</th>
-                <th>ExpirationDate</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>Image</th>
-                <th>StockThreshold</th>
-                <th>Tag</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+{% if products is empty %}
+    <div class="alert alert-info">Aucun produit pour le moment.</div>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for product in products %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.description }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.stock }}</td>
-                <td>{{ product.country }}</td>
-                <td>{{ product.active ? 'Yes' : 'No' }}</td>
-                <td>{{ product.expirationDate ? product.expirationDate|date('Y-m-d') : '' }}</td>
-                <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ product.image }}</td>
-                <td>{{ product.stockThreshold }}</td>
-                <td>{{ product.tag }}</td>
-                <td>
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}">show</a>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        {# Tag badge #}
+                        {% if product.tag %}
+                            <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} mb-2">
+                                {{ product.tag|capitalize }}
+                            </span>
+                        {% endif %}
 
-    <a href="{{ path('app_product_new') }}">Create new</a>
+                        <h5 class="card-title">{{ product.name }}</h5>
+
+                        <p class="card-text text-muted">
+                            {{ product.description|length > 80 ? product.description|slice(0, 80) ~ '...' : product.description }}
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary mb-0">{{ product.price|number_format(2, ',', ' ') }} €</span>
+
+                            {% if product.stock <= product.stockThreshold %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-exclamation-triangle"></i> Stock faible ({{ product.stock }})
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    Stock : {{ product.stock }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if product.category %}
+                            <small class="text-muted">
+                                <i class="bi bi-tag"></i> {{ product.category.name }}
+                            </small>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+                        <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 {% endblock %}
