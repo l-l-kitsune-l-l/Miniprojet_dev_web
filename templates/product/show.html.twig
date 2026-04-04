@@ -1,70 +1,84 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product{% endblock %}
+{% block title %}{{ product.name }} — Otaku Shop{% endblock %}
 
 {% block body %}
-    <h1>Product</h1>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h1>{{ product.name }}</h1>
+                    {% if product.tag %}
+                        <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} fs-6">
+                            {{ product.tag|capitalize }}
+                        </span>
+                    {% endif %}
+                </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ product.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ product.name }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ product.description }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ product.price }}</td>
-            </tr>
-            <tr>
-                <th>Stock</th>
-                <td>{{ product.stock }}</td>
-            </tr>
-            <tr>
-                <th>Country</th>
-                <td>{{ product.country }}</td>
-            </tr>
-            <tr>
-                <th>Active</th>
-                <td>{{ product.active ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>ExpirationDate</th>
-                <td>{{ product.expirationDate ? product.expirationDate|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>{{ product.image }}</td>
-            </tr>
-            <tr>
-                <th>StockThreshold</th>
-                <td>{{ product.stockThreshold }}</td>
-            </tr>
-            <tr>
-                <th>Tag</th>
-                <td>{{ product.tag }}</td>
-            </tr>
-        </tbody>
-    </table>
+                <p class="lead">{{ product.description }}</p>
 
-    <a href="{{ path('app_product_index') }}">back to list</a>
+                <hr>
 
-    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th><i class="bi bi-currency-euro"></i> Prix</th>
+                                <td class="h4 text-primary">{{ product.price|number_format(2, ',', ' ') }} €</td>
+                            </tr>
+                            <tr>
+                                <th><i class="bi bi-box"></i> Stock</th>
+                                <td>
+                                    {{ product.stock }}
+                                    {% if product.stock <= product.stockThreshold %}
+                                        <span class="badge bg-warning text-dark">Faible</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="bi bi-tag"></i> Catégorie</th>
+                                <td>{{ product.category ? product.category.name : '—' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <th><i class="bi bi-geo-alt"></i> Pays</th>
+                                <td>{{ product.country ?? '—' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="bi bi-calendar"></i> Expiration</th>
+                                <td>{{ product.expirationDate ? product.expirationDate|date('d/m/Y') : '—' }}</td>
+                            </tr>
+                            <tr>
+                                <th><i class="bi bi-clock"></i> Créé le</th>
+                                <td>{{ product.createdAt|date('d/m/Y à H:i') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-    {{ include('product/_delete_form.html.twig') }}
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ path('app_product_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <div>
+                    <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Modifier
+                    </a>
+                    <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}" class="d-inline"
+                          onsubmit="return confirm('Supprimer ce produit ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                        <button class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
