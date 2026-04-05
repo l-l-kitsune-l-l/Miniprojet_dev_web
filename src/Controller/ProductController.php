@@ -105,4 +105,41 @@ public function delete(Request $request, Product $product, EntityManagerInterfac
 
     return $this->redirectToRoute('app_product_index');
 }
+    // ===== ÉDITION =====
+    #[IsGranted('ROLE_USER')]
+    #[Route('/{id}/buy', name: 'app_product_buy', methods: ['POST'])]
+    public function buy(Request $request, Product $product, EntityManagerInterface $em): Response
+    {
+        // Vérifier le stock
+        $quantity = max(1, (int) $request->request->get('quantity', 1));
+
+        if ($product->getStock() < $quantity) {
+            $this->addFlash('danger', 'Stock insuffisant pour ce produit.');
+            return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
+        }
+
+        // Créer la commande
+        $order = new Order();
+        $order->setReference('CMD-' . strtoupper(uniqid()));
+        $order->setStatus('pending');
+        $order->setBuyer($this->getUser());
+        $order->setTotal($product->getPrice() * $quantity);
+
+        // Créer la ligne de commande
+        $line = new OrderLine();
+        $line->setRelatedOrder($order);
+        $line->setProduct($product);
+        $line->setQuantity($quantity);
+        $line->setUnitPrice($product->getPrice());
+
+        // Décrémenter le stock
+        $product->setStock($product->getStock() - $quantity);
+
+        $em->persist($order);
+        $em->persist($line);
+        $em->flush();
+
+        $this->addFlash('success', 'Commande ' . $order->getReference() . ' passée avec succès !');
+        return $this->redirectToRoute('app_profile_orders');
+    }
 }
