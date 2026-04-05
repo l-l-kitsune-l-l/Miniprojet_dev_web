@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes favoris — Otaku Shop{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-heart"></i> Mes favoris</h1>
+    <a href="{{ path('app_profile') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au profil
+    </a>
+</div>
+
+{% if favorites is empty %}
+    <div class="alert alert-info">
+        Vous n'avez aucun favori.
+        <a href="{{ path('app_product_index') }}">Parcourir les produits</a>
+    </div>
+{% else %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in favorites %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        {% if product.tag %}
+                            <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} mb-2">
+                                {{ product.tag|capitalize }}
+                            </span>
+                        {% endif %}
+
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">
+                            {{ product.description|length > 80 ? product.description|slice(0, 80) ~ '...' : product.description }}
+                        </p>
+                        <span class="h5 text-primary">{{ product.price|number_format(2, ',', ' ') }} €</span>
+
+                        {% if product.category %}
+                            <br><small class="text-muted">
+                                <i class="bi bi-tag"></i> {{ product.category.name }}
+                            </small>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a href="{{ path('app_product_show', {id: product.id}) }}"
+                           class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+
+                        <form method="post" action="{{ path('app_favorite_remove', {id: product.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ product.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Retirer des favoris ?')">
+                                <i class="bi bi-heart-fill"></i> Retirer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

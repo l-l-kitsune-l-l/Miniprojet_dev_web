@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes — Otaku Shop{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-cart3"></i> Mes commandes</h1>
+    <a href="{{ path('app_profile') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Retour au profil
+    </a>
+</div>
+
+{% if orders is empty %}
+    <div class="alert alert-info">Vous n'avez passé aucune commande.</div>
+{% else %}
+    <div class="row row-cols-1 g-4">
+        {% for order in orders %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ order.reference }}</strong>
+                            <small class="text-muted ms-2">{{ order.createdAt|date('d/m/Y à H:i') }}</small>
+                        </div>
+                        <span class="badge bg-{% if order.status == 'confirmed' %}success{% elseif order.status == 'pending' %}warning text-dark{% elseif order.status == 'shipped' %}primary{% else %}danger{% endif %}">
+                            {% if order.status == 'pending' %}En cours
+                            {% elseif order.status == 'confirmed' %}Validée
+                            {% elseif order.status == 'shipped' %}Expédiée
+                            {% else %}Annulée{% endif %}
+                        </span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                {% for line in order.orderLines %}
+                                    <tr>
+                                        <td>{{ line.product.name }}</td>
+                                        <td>{{ line.unitPrice|number_format(2, ',', ' ') }} €</td>
+                                        <td>x{{ line.quantity }}</td>
+                                        <td class="text-end">{{ (line.unitPrice * line.quantity)|number_format(2, ',', ' ') }} €</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-end">
+                        <strong>Total : {{ order.total|number_format(2, ',', ' ') }} €</strong>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}
