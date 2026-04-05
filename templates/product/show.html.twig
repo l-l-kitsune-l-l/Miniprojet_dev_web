@@ -66,6 +66,23 @@
                     <i class="bi bi-arrow-left"></i> Retour
                 </a>
                 <div>
+                {% if app.user %}
+                     {% if app.user.favorites.contains(product) %}
+                        <form method="post" action="{{ path('app_favorite_remove', {id: product.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ product.id) }}">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-heart-fill"></i> Retirer des favoris
+                                </button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{{ path('app_favorite_add', {id: product.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('favorite' ~ product.id) }}">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-heart"></i> Ajouter aux favoris
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endif %}
                     <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-primary">
                         <i class="bi bi-pencil"></i> Modifier
                     </a>
