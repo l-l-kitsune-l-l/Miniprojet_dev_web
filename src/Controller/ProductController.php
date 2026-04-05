@@ -105,7 +105,7 @@ public function delete(Request $request, Product $product, EntityManagerInterfac
 
     return $this->redirectToRoute('app_product_index');
 }
-    // ===== ÉDITION =====
+    // =====ACHETER =====
     #[IsGranted('ROLE_USER')]
     #[Route('/{id}/buy', name: 'app_product_buy', methods: ['POST'])]
     public function buy(Request $request, Product $product, EntityManagerInterface $em): Response
