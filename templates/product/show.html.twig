@@ -83,6 +83,26 @@
                         </form>
                     {% endif %}
                 {% endif %}
+
+                {% if app.user and app.user != product.seller %}
+                    {% if product.stock > 0 %}
+                     <form method="post" action="{{ path('app_product_buy', {id: product.id}) }}" class="d-inline"
+                            onsubmit="return confirm('Confirmer l\'achat ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('buy' ~ product.id) }}">
+                         <div class="input-group d-inline-flex" style="width: auto;">
+                            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}"
+                                class="form-control form-control-sm" style="width: 60px;">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="bi bi-cart-plus"></i> Acheter
+                            </button>
+                         </div>
+                    </form>
+                {% else %}
+                    <span class="btn btn-secondary btn-sm disabled">
+                        <i class="bi bi-x-circle"></i> Rupture de stock
+                    </span>
+                {% endif %}
+            {% endif %}
                     <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-primary">
                         <i class="bi bi-pencil"></i> Modifier
                     </a>
