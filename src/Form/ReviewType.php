@@ -21,11 +21,11 @@ class ReviewType extends AbstractType
             ->add('rating', ChoiceType::class, [
                 'label' => 'Note',
                 'choices' => [
-                    '⭐' => 1,
-                    '⭐⭐' => 2,
-                    '⭐⭐⭐' => 3,
-                    '⭐⭐⭐⭐' => 4,
-                    '⭐⭐⭐⭐⭐' => 5,
+                     '★ ' => 1,
+                    '★★' => 2,
+                    '★★★' => 3,
+                    '★★★★' => 4,
+                    '★★★★★' => 5,
                 ],
                 'expanded' => false
             ])
