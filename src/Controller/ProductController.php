@@ -17,14 +17,21 @@ use App\Entity\OrderLine;
 class ProductController extends AbstractController
 {
     // ===== LISTE =====
-    #[Route('/', name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+   #[Route('/', name: 'app_product_index', methods: ['GET'])]
+    public function index(Request $request, ProductRepository $productRepository): Response
     {
+        $form = $this->createForm(SearchType::class);
+        $form->handleRequest($request);
+
+        // Récupérer les filtres du formulaire
+        $filters = $form->getData() ?? [];
+
+        // Recherche  filtrée
+        $products = $productRepository->search($filters);
+
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findBy(
-                ['active' => true],
-                ['createdAt' => 'DESC']
-            ),
+            'products' => $products,
+            'searchForm' => $form,
         ]);
     }
 
