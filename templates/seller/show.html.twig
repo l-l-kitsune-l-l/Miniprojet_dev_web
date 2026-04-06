@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ seller.pseudo }} — Otaku Shop{% endblock %}
+
+{% block body %}
+<div class="row">
+    {# ===== SIDEBAR VENDEUR ===== #}
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                {% if seller.avatar %}
+                    <img src="{{ asset(seller.avatar) }}" alt="Avatar"
+                         class="rounded-circle mb-3" width="100" height="100">
+                {% else %}
+                    <i class="bi bi-person-circle d-block mb-3" style="font-size: 5rem; color: #6c757d;"></i>
+                {% endif %}
+
+                <h3>{{ seller.pseudo }}</h3>
+                <p class="text-muted">{{ seller.firstName }} {{ seller.lastName }}</p>
+                <p class="text-muted"><small>Membre depuis {{ seller.createdAt|date('d/m/Y') }}</small></p>
+
+                {# Note moyenne #}
+                <div class="mb-3">
+                    <span class="text-warning fs-4">
+                        {% for i in 1..5 %}
+                            {% if i <= avgRating|round %}
+                                <i class="bi bi-star-fill"></i>
+                            {% elseif i - 0.5 <= avgRating %}
+                                <i class="bi bi-star-half"></i>
+                            {% else %}
+                                <i class="bi bi-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </span>
+                    <p class="text-muted mb-0">
+                        {{ avgRating|number_format(1) }} / 5
+                        ({{ reviews|length }} avis)
+                    </p>
+                </div>
+
+                {# Bouton laisser un avis #}
+                {% if app.user and app.user != seller %}
+                    <a href="{{ path('app_seller_review', {id: seller.id}) }}" class="btn btn-primary">
+                        <i class="bi bi-chat-dots"></i> Laisser un avis
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Stats #}
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h6>Statistiques</h6>
+                <div class="d-flex justify-content-around text-center">
+                    <div>
+                        <h4 class="text-primary mb-0">{{ products|length }}</h4>
+                        <small class="text-muted">Produits</small>
+                    </div>
+                    <div>
+                        <h4 class="text-success mb-0">{{ reviews|length }}</h4>
+                        <small class="text-muted">Avis</small>
+                    </div>
+                    <div>
+                        <h4 class="text-warning mb-0">{{ avgRating|number_format(1) }}</h4>
+                        <small class="text-muted">Note</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ===== CONTENU PRINCIPAL ===== #}
+    <div class="col-lg-8">
+
+        {# --- Produits du vendeur --- #}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-box-seam"></i> Produits de {{ seller.pseudo }}</h5>
+            </div>
+            <div class="card-body">
+                {% if products is empty %}
+                    <p class="text-muted">Ce vendeur n'a aucun produit en vente.</p>
+                {% else %}
+                    <div class="row row-cols-1 row-cols-md-2 g-3">
+                        {% for product in products %}
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        {% if product.tag %}
+                                            <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} mb-1">
+                                                {{ product.tag|capitalize }}
+                                            </span>
+                                        {% endif %}
+                                        <h6>{{ product.name }}</h6>
+                                        <span class="text-primary fw-bold">{{ product.price|number_format(2, ',', ' ') }} €</span>
+                                    </div>
+                                    <div class="card-footer bg-white">
+                                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-eye"></i> Voir
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# --- Avis sur le vendeur --- #}
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Avis ({{ reviews|length }})</h5>
+                {% if app.user and app.user != seller %}
+                    <a href="{{ path('app_seller_review', {id: seller.id}) }}" class="btn btn-sm btn-light">
+                        <i class="bi bi-plus-lg"></i> Écrire un avis
+                    </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if reviews is empty %}
+                    <p class="text-muted">Aucun avis pour le moment. Soyez le premier !</p>
+                {% else %}
+                    {% for review in reviews %}
+                        <div class="border-bottom pb-3 mb-3 {% if loop.last %}border-0 pb-0 mb-0{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ review.author.pseudo }}</strong>
+                                    <small class="text-muted ms-2">{{ review.createdAt|date('d/m/Y') }}</small>
+                                </div>
+                                <span class="text-warning">
+                                    {% for i in 1..5 %}
+                                        {% if i <= review.rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                            </div>
+                            <p class="mt-2 mb-0">{{ review.content }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
