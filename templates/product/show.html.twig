@@ -40,6 +40,37 @@
                                 <th><i class="bi bi-tag"></i> Catégorie</th>
                                 <td>{{ product.category ? product.category.name : '—' }}</td>
                             </tr>
+                            <tr>
+                                 <th><i class="bi bi-person"></i> Vendeur</th>
+                                <td>
+                                    {% if product.seller %}
+                                        <a href="{{ path('app_seller_show', {id: product.seller.id}) }}">
+                                        {{ product.seller.pseudo }}
+                                        {# Afficher la note moyenne du vendeur #}
+                                        {% set sellerReviews = product.seller.receivedReviews %}
+                                        {% if sellerReviews|length > 0 %}
+                                            {% set totalRating = 0 %}
+                                        {% for r in sellerReviews %}
+                                            {% set totalRating = totalRating + r.rating %}
+                                        {% endfor %}
+                                        {% set avg = totalRating / sellerReviews|length %}
+                                            <span class="text-warning ms-1">
+                                            {% for i in 1..5 %}
+                                        {% if i <= avg|round %}
+                                             <i class="bi bi-star-fill" style="font-size: 0.8rem;"></i>
+                                        {% else %}
+                                            <i class="bi bi-star" style="font-size: 0.8rem;"></i>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                <small class="text-muted">({{ sellerReviews|length }})</small>
+                            {% endif %}
+                                </a>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <div class="col-md-6">
