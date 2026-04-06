@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.locale }}">
+<html lang="{{ app.request.locale }}"
+      data-bs-theme="{% if app.user %}{{ app.user.theme }}{% else %}{{ app.session.get('theme', 'light') }}{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +40,17 @@
                     </div>
                 </form>
                 <ul class="navbar-nav">
+                    {# ===== BOUTON THÈME ===== #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_toggle_theme') }}" title="Changer de thème">
+                            {% set currentTheme = app.user ? app.user.theme : app.session.get('theme', 'light') %}
+                            {% if currentTheme == 'dark' %}
+                                <i class="bi bi-sun-fill text-warning"></i>
+                            {% else %}
+                                <i class="bi bi-moon-fill"></i>
+                            {% endif %}
+                            </a>
+                    </li>
                     {% if app.user %}
                     {# Menu utilisateur connecté #}
                     <li class="nav-item dropdown">
