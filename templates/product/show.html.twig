@@ -3,82 +3,82 @@
 {% block title %}{{ product.name }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h1>{{ product.name }}</h1>
-                    {% if product.tag %}
-                        <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} fs-6">
-                            {{ product.tag|capitalize }}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h1>{{ product.name }}</h1>
+                        {% if product.tag %}
+                            <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} fs-6">
+                            {{ ('product_tag.' ~ product.tag)|trans }}
                         </span>
-                    {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <p class="lead">{{ product.description }}</p>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th><i class="bi bi-currency-euro"></i> {{ 'price_label'|trans }}</th>
+                                    <td class="h4 text-primary">{{ product.price|number_format(2, ',', ' ') }} €</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-box"></i> {{ 'stock_label'|trans }}</th>
+                                    <td>
+                                        {{ product.stock }}
+                                        {% if product.stock <= product.stockThreshold %}
+                                            <span class="badge bg-warning text-dark">{{ 'low_stock'|trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-tag"></i> {{ 'category_label'|trans }}</th>
+                                    <td>{{ product.category ? product.category.name : '—' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th><i class="bi bi-geo-alt"></i> {{ 'country_label'|trans }}</th>
+                                    <td>{{ product.country ?? '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-calendar"></i> {{ 'expiration_label'|trans }}</th>
+                                    <td>{{ product.expirationDate ? product.expirationDate|date('d/m/Y') : '—' }}</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="bi bi-clock"></i> {{ 'created_at_label'|trans }}</th>
+                                    <td>{{ product.createdAt|date('d/m/Y à H:i') }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
-                <p class="lead">{{ product.description }}</p>
-
-                <hr>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <table class="table table-borderless">
-                            <tr>
-                                <th><i class="bi bi-currency-euro"></i> Prix</th>
-                                <td class="h4 text-primary">{{ product.price|number_format(2, ',', ' ') }} €</td>
-                            </tr>
-                            <tr>
-                                <th><i class="bi bi-box"></i> Stock</th>
-                                <td>
-                                    {{ product.stock }}
-                                    {% if product.stock <= product.stockThreshold %}
-                                        <span class="badge bg-warning text-dark">Faible</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><i class="bi bi-tag"></i> Catégorie</th>
-                                <td>{{ product.category ? product.category.name : '—' }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <table class="table table-borderless">
-                            <tr>
-                                <th><i class="bi bi-geo-alt"></i> Pays</th>
-                                <td>{{ product.country ?? '—' }}</td>
-                            </tr>
-                            <tr>
-                                <th><i class="bi bi-calendar"></i> Expiration</th>
-                                <td>{{ product.expirationDate ? product.expirationDate|date('d/m/Y') : '—' }}</td>
-                            </tr>
-                            <tr>
-                                <th><i class="bi bi-clock"></i> Créé le</th>
-                                <td>{{ product.createdAt|date('d/m/Y à H:i') }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-footer d-flex justify-content-between">
-                <a href="{{ path('app_product_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Retour
-                </a>
-                <div>
-                    <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-primary">
-                        <i class="bi bi-pencil"></i> Modifier
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{{ path('app_product_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> {{ 'back_button'|trans }}
                     </a>
-                    <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}" class="d-inline"
-                          onsubmit="return confirm('Supprimer ce produit ?')">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-                        <button class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Supprimer
-                        </button>
-                    </form>
+                    <div>
+                        <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-primary">
+                            <i class="bi bi-pencil"></i> {{ 'edit_button'|trans }}
+                        </a>
+                        <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}" class="d-inline"
+                              onsubmit="return confirm('{{ 'delete_product_confirm'|trans }}')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                            <button class="btn btn-danger">
+                                <i class="bi bi-trash"></i> {{ 'delete_product_button'|trans }}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

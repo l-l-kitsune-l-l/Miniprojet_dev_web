@@ -1,46 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commandes — Otaku Shop{% endblock %}
+{% block title %}{{ 'orders_title'|trans }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<h1 class="mb-4"><i class="bi bi-cart3"></i> Commandes</h1>
+    <h1 class="mb-4"><i class="bi bi-cart3"></i> {{ 'orders_title'|trans }}</h1>
 
-{% if orders is empty %}
-    <div class="alert alert-info">Aucune commande.</div>
-{% else %}
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-dark">
+    {% if orders is empty %}
+        <div class="alert alert-info">{{ 'no_orders'|trans }}</div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
                 <tr>
-                    <th>Référence</th>
-                    <th>Acheteur</th>
-                    <th>Statut</th>
-                    <th>Total</th>
-                    <th>Date</th>
-                    <th>Actions</th>
+                    <th>{{ 'table_header_reference'|trans }}</th>
+                    <th>{{ 'table_header_buyer'|trans }}</th>
+                    <th>{{ 'table_header_status'|trans }}</th>
+                    <th>{{ 'table_header_total'|trans }}</th>
+                    <th>{{ 'table_header_date'|trans }}</th>
+                    <th>{{ 'table_header_actions'|trans }}</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for order in orders %}
                     <tr>
                         <td class="fw-semibold">{{ order.reference }}</td>
                         <td>{{ order.buyer.pseudo }}</td>
                         <td>
                             <span class="badge bg-{% if order.status == 'confirmed' %}success{% elseif order.status == 'pending' %}warning text-dark{% elseif order.status == 'shipped' %}primary{% else %}danger{% endif %}">
-                                {{ order.status }}
+                                {{ ('order_status.' ~ order.status)|trans }}
                             </span>
                         </td>
                         <td>{{ order.total|number_format(2, ',', ' ') }} €</td>
                         <td>{{ order.createdAt|date('d/m/Y') }}</td>
                         <td>
                             <a href="{{ path('app_order_show', {id: order.id}) }}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-eye"></i> Détails
+                                <i class="bi bi-eye"></i> {{ 'details_button'|trans }}
                             </a>
                         </td>
                     </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% endif %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}

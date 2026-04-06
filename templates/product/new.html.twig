@@ -1,26 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau produit — Otaku Shop{% endblock %}
+{% block title %}{{ 'new_product_title'|trans }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0"><i class="bi bi-plus-lg"></i> Nouveau produit</h3>
-            </div>
-            <div class="card-body">
-                {{ form_start(form) }}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-plus-lg"></i> {{ 'new_product_title'|trans }}</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
                     {{ form_widget(form) }}
                     <div class="d-flex justify-content-between mt-4">
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-lg"></i> Créer
+                            <i class="bi bi-check-lg"></i> {{ 'create_button'|trans }}
                         </button>
-                        <a href="{{ path('app_product_index') }}" class="btn btn-secondary">Annuler</a>
+                        <a href="{{ path('app_product_index') }}" class="btn btn-secondary">{{ 'cancel_button'|trans }}</a>
                     </div>
-                {{ form_end(form) }}
+                    {{ form_end(form) }}
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -1,68 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produits — Otaku Shop{% endblock %}
+{% block title %}{{ 'products_title'|trans }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="bi bi-box-seam"></i> Produits</h1>
-    <a href="{{ path('app_product_new') }}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Nouveau produit
-    </a>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-box-seam"></i> {{ 'products_title'|trans }}</h1>
+        <a href="{{ path('app_product_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> {{ 'new_product_button'|trans }}
+        </a>
+    </div>
 
-{% if products is empty %}
-    <div class="alert alert-info">Aucun produit pour le moment.</div>
-{% else %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for product in products %}
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        {# Tag badge #}
-                        {% if product.tag %}
-                            <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} mb-2">
-                                {{ product.tag|capitalize }}
+    {% if products is empty %}
+        <div class="alert alert-info">{{ 'no_products'|trans }}</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for product in products %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            {# Tag badge #}
+                            {% if product.tag %}
+                                <span class="badge bg-{% if product.tag == 'promo' %}danger{% elseif product.tag == 'nouveau' %}primary{% elseif product.tag == 'best' %}success{% else %}warning text-dark{% endif %} mb-2">
+                                {{ ('product_tag.' ~ product.tag)|trans }}
                             </span>
-                        {% endif %}
+                            {% endif %}
 
-                        <h5 class="card-title">{{ product.name }}</h5>
+                            <h5 class="card-title">{{ product.name }}</h5>
 
-                        <p class="card-text text-muted">
-                            {{ product.description|length > 80 ? product.description|slice(0, 80) ~ '...' : product.description }}
-                        </p>
+                            <p class="card-text text-muted">
+                                {{ product.description|length > 80 ? product.description|slice(0, 80) ~ '...' : product.description }}
+                            </p>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="h5 text-primary mb-0">{{ product.price|number_format(2, ',', ' ') }} €</span>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 text-primary mb-0">{{ product.price|number_format(2, ',', ' ') }} €</span>
 
-                            {% if product.stock <= product.stockThreshold %}
-                                <span class="badge bg-warning text-dark">
-                                    <i class="bi bi-exclamation-triangle"></i> Stock faible ({{ product.stock }})
+                                {% if product.stock <= product.stockThreshold %}
+                                    <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-exclamation-triangle"></i> {{ 'low_stock'|trans({'count': product.stock}) }}
                                 </span>
-                            {% else %}
-                                <span class="badge bg-success">
-                                    Stock : {{ product.stock }}
+                                {% else %}
+                                    <span class="badge bg-success">
+                                    {{ 'stock_label'|trans({'count': product.stock}) }}
                                 </span>
+                                {% endif %}
+                            </div>
+
+                            {% if product.category %}
+                                <small class="text-muted">
+                                    <i class="bi bi-tag"></i> {{ product.category.name }}
+                                </small>
                             {% endif %}
                         </div>
 
-                        {% if product.category %}
-                            <small class="text-muted">
-                                <i class="bi bi-tag"></i> {{ product.category.name }}
-                            </small>
-                        {% endif %}
-                    </div>
-
-                    <div class="card-footer bg-white d-flex justify-content-between">
-                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-eye"></i> Voir
-                        </a>
-                        <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </a>
+                        <div class="card-footer bg-white d-flex justify-content-between">
+                            <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> {{ 'view_button'|trans }}
+                            </a>
+                            <a href="{{ path('app_product_edit', {id: product.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> {{ 'edit_button'|trans }}
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}

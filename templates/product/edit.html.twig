@@ -1,37 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier {{ product.name }} — Otaku Shop{% endblock %}
+{% block title %}{{ 'edit_product_title'|trans({'name': product.name}) }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0"><i class="bi bi-pencil"></i> Modifier : {{ product.name }}</h3>
-            </div>
-            <div class="card-body">
-                {{ form_start(form) }}
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-pencil"></i> {{ 'edit_product_header'|trans({'name': product.name}) }}</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
                     {{ form_widget(form) }}
                     <div class="d-flex justify-content-between mt-4">
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-lg"></i> Mettre à jour
+                            <i class="bi bi-check-lg"></i> {{ 'update_button'|trans }}
                         </button>
-                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-secondary">Annuler</a>
+                        <a href="{{ path('app_product_show', {id: product.id}) }}" class="btn btn-secondary">{{ 'cancel_button'|trans }}</a>
                     </div>
-                {{ form_end(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            {# Bouton supprimer séparé #}
+            <div class="mt-3 text-end">
+                <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}"
+                      onsubmit="return confirm('{{ 'delete_product_confirm'|trans }}')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                    <button class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i> {{ 'delete_product_button'|trans }}
+                    </button>
+                </form>
             </div>
         </div>
-
-        {# Bouton supprimer séparé #}
-        <div class="mt-3 text-end">
-            <form method="post" action="{{ path('app_product_delete', {id: product.id}) }}"
-                  onsubmit="return confirm('Supprimer ce produit ?')">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-                <button class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> Supprimer ce produit
-                </button>
-            </form>
-        </div>
     </div>
-</div>
 {% endblock %}

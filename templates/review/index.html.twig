@@ -1,25 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Avis — Otaku Shop{% endblock %}
+{% block title %}{{ 'reviews_title'|trans }} — Otaku Shop{% endblock %}
 
 {% block body %}
-<h1 class="mb-4"><i class="bi bi-star"></i> Avis vendeurs</h1>
+    <h1 class="mb-4"><i class="bi bi-star"></i> {{ 'reviews_heading'|trans }}</h1>
 
-{% if reviews is empty %}
-    <div class="alert alert-info">Aucun avis pour le moment.</div>
-{% else %}
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for review in reviews %}
-            <div class="col">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <h6 class="mb-0">
-                                <i class="bi bi-person"></i> {{ review.author.pseudo }}
-                                <i class="bi bi-arrow-right"></i>
-                                <strong>{{ review.seller.pseudo }}</strong>
-                            </h6>
-                            <span class="text-warning">
+    {% if reviews is empty %}
+        <div class="alert alert-info">{{ 'no_reviews'|trans }}</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for review in reviews %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-person"></i> {{ review.author.pseudo }}
+                                    <i class="bi bi-arrow-right"></i>
+                                    <strong>{{ review.seller.pseudo }}</strong>
+                                </h6>
+                                <span class="text-warning">
                                 {% for i in 1..5 %}
                                     {% if i <= review.rating %}
                                         <i class="bi bi-star-fill"></i>
@@ -28,13 +28,13 @@
                                     {% endif %}
                                 {% endfor %}
                             </span>
+                            </div>
+                            <p class="card-text">{{ review.content }}</p>
+                            <small class="text-muted">{{ review.createdAt|date('d/m/Y') }}</small>
                         </div>
-                        <p class="card-text">{{ review.content }}</p>
-                        <small class="text-muted">{{ review.createdAt|date('d/m/Y') }}</small>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
