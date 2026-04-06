@@ -17,7 +17,10 @@
                             <h6 class="mb-0">
                                 <i class="bi bi-person"></i> {{ review.author.pseudo }}
                                 <i class="bi bi-arrow-right"></i>
-                                <strong>{{ review.seller.pseudo }}</strong>
+                                <a href="{{ path('app_seller_show', {id: review.seller.id}) }}" 
+                                    class="text-decoration-none">
+                                    <strong>{{ review.seller.pseudo }}</strong>
+                                </a>
                             </h6>
                             <span class="text-warning">
                                 {% for i in 1..5 %}
