@@ -152,4 +152,38 @@ public function delete(Request $request, Product $product, EntityManagerInterfac
         $this->addFlash('success', 'Commande ' . $order->getReference() . ' passée avec succès !');
         return $this->redirectToRoute('app_profile_orders');
     }
+
+    
+
+    //  DUPLIQUER 
+    #[IsGranted('ROLE_USER')]
+    #[Route('/{id}/duplicate', name: 'app_product_duplicate', methods: ['POST'])]
+    public function duplicate(Product $product, EntityManagerInterface $em): Response
+    {
+        // Vérifier si c'est le vendeur ou l'admin
+        if ($product->getSeller() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('danger', 'Vous ne pouvez dupliquer que vos propres produits.');
+            return $this->redirectToRoute('app_product_index');
+        }
+
+        //  copie du produit
+        $copy = new Product();
+        $copy->setName($product->getName() . ' (copie)');
+        $copy->setDescription($product->getDescription());
+        $copy->setPrice($product->getPrice());
+        $copy->setStock($product->getStock());
+        $copy->setStockThreshold($product->getStockThreshold());
+        $copy->setCountry($product->getCountry());
+        $copy->setExpirationDate($product->getExpirationDate());
+        $copy->setTag($product->getTag());
+        $copy->setActive($product->isActive());
+        $copy->setCategory($product->getCategory());
+        $copy->setSeller($this->getUser());
+
+        $em->persist($copy);
+        $em->flush();
+
+        $this->addFlash('success', 'Annonce dupliquée ! Vous pouvez maintenant la modifier.');
+        return $this->redirectToRoute('app_product_edit', ['id' => $copy->getId()]);
+    }
 }
